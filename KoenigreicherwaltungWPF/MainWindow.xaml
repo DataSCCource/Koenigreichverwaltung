@@ -1,0 +1,207 @@
+﻿<Window x:Class="DorfVerwaltungWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DorfVerwaltungWPF"
+        mc:Ignorable="d"
+        Title="Dorfverwaltung" FontSize="18" Height="700" Width="850">
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
+        </Grid.RowDefinitions>
+
+        
+        <Label Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3">Dorfverwaltungsprogram für die Steuerberechnung</Label>
+        
+        <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" Margin="5">
+            <StackPanel Orientation="Vertical">
+
+                <StackPanel Orientation="Horizontal">
+                    <Label>Steuersatz: </Label>
+                    <TextBox VerticalAlignment="Center" x:Name="taxScoreBox" Width="75" />
+                    <Button x:Name="updateTaxBTN" Margin="5" Click="UpdateTax_Clicked" Width="100">Update</Button>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label>Steuereinnahmen:</Label>
+                    <TextBlock x:Name="taxBlock" VerticalAlignment="Center" />
+                    <TextBlock VerticalAlignment="Center" Text=" Gold"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3" Grid.Column="1" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" Margin="5">
+            <StackPanel Orientation="Vertical">
+                <Label>Stämme:</Label>
+                <ListView x:Name="tribeListView" Margin="5" Height="150" SelectionMode="Single" PreviewMouseLeftButtonUp="TribeListView_Selected">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} (Macht: {1})">
+                                        <Binding Path="Name"/>
+                                        <Binding Path="Machtfaktor"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="deleteTribeBTN" Margin="5" Click="DeleteTribe_Clicked" Width="100" IsEnabled="False">Löschen</Button>
+                    <Button x:Name="addTribeBTN" Margin="5" Click="AddTribeBTN_Click" Width="100">Neu...</Button>
+                </StackPanel>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0">Name:</Label>
+                    <TextBox Width="150" Grid.Row="0" Grid.Column="1" Text="{Binding SelectedItem.Name, ElementName=tribeListView}" />
+
+                    <Label Grid.Row="1" Grid.Column="0">Anführer:</Label>
+                    <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="{Binding SelectedItem.Anfuehrer.Name, ElementName=tribeListView}"  />
+
+                    <Label Grid.Row="2" Grid.Column="0">Anführer seit:</Label>
+                    <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Text="{Binding SelectedItem.AnfuehrerSeit, ElementName=tribeListView}" />
+
+                    <Label Grid.Row="3" Grid.Column="0">Existenz:</Label>
+                    <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                        <TextBox Width="100"  Text="{Binding SelectedItem.ExistenzSeit, ElementName=tribeListView}"/>
+                        <TextBlock VerticalAlignment="Center" Text=" n.d.K." />
+                    </StackPanel>
+
+                    <Label Grid.Row="4" Grid.Column="0">Machtfaktor:</Label>
+                    <TextBlock Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Text="{Binding SelectedItem.Machtfaktor, ElementName=tribeListView}"/>
+
+                </Grid>
+                <Button Margin="5" Click="SaveBTN_Click" Width="100">Speichern</Button>
+
+            </StackPanel>
+        </Border>
+
+
+        <Border Grid.Row="3" Grid.Column="2" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" Margin="5">
+            <StackPanel Orientation="Vertical">
+                <Label>Zwerge:</Label>
+                <ListView x:Name="dwarfListView" Height="150" Margin="5" SelectionMode="Single" PreviewMouseLeftButtonUp="DwarfListView_Selected">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}{1} (Macht: {2})">
+                                        <Binding Path="IstAnfuehrer"/>
+                                        <Binding Path="Name"/>
+                                        <Binding Path="Machtfaktor"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="deleteDwarfBTN" Margin="5" Click="DeleteDwarf_Clicked" Width="100" IsEnabled="False">Löschen</Button>
+                    <Button x:Name="addDwarfBTN" Margin="5" Click="AddDwarfBTN_Click" Width="100" IsEnabled="False">Neu...</Button>
+                </StackPanel>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0">Name:</Label>
+                    <TextBox Width="150" Grid.Row="0" Grid.Column="1" Text="{Binding SelectedItem.Name, ElementName=dwarfListView}" />
+
+                    <Label Grid.Row="1" Grid.Column="0">Alter:</Label>
+                    <TextBox Width="150" Grid.Row="1" Grid.Column="1" Text="{Binding SelectedItem.Alter, ElementName=dwarfListView}" />
+
+                    <Label Grid.Row="2" Grid.Column="0">Machtfaktor:</Label>
+                    <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Text="{Binding SelectedItem.Machtfaktor, ElementName=dwarfListView}"/>
+                </Grid>
+                <Button x:Name="makeLeaderBTN" Margin="5" Click="MakeDwarfLeaderBTN_Click" IsEnabled="False">Mache zum Anführer</Button>
+                <Button Margin="5" Click="SaveBTN_Click" Width="100">Speichern</Button>
+
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3" Grid.Column="3" Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" Margin="5">
+            <StackPanel Orientation="Vertical">
+                <Label>Waffen:</Label>
+                <ListView x:Name="weaponListView" Height="150" Margin="5" SelectionMode="Single" PreviewMouseLeftButtonUp="WeaponListView_Selected">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} (Magie: {1})">
+                                        <Binding Path="Typ"/>
+                                        <Binding Path="Magie"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="deleteWeaponBTN" Margin="5" Click="DeleteWeapon_Clicked" Width="100" IsEnabled="False">Löschen</Button>
+                    <Button x:Name="addWeaponBTN" Margin="5" Click="AddWeaponBTN_Click" Width="100" IsEnabled="False">Neu...</Button>
+                </StackPanel>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0">Waffentyp:</Label>
+                    <TextBox Width="150" Grid.Row="0" Grid.Column="1" Text="{Binding SelectedItem.Typ, ElementName=weaponListView}" />
+
+                    <Label Grid.Row="1" Grid.Column="0">Magie:</Label>
+                    <TextBox Width="150" Grid.Row="1" Grid.Column="1" Text="{Binding SelectedItem.Magie, ElementName=weaponListView}" />
+                </Grid>
+                <Button Margin="5" Click="SaveBTN_Click" Width="100">Speichern</Button>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
